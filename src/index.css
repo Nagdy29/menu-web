@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import "tailwindcss";
+
+html{
+scroll-behavior:smooth;
+}
+
+body{
+margin:0;
+background:#f6f6f6;
+font-family:Tahoma,sans-serif;
+}
+
+::-webkit-scrollbar{
+width:7px;
+}
+
+::-webkit-scrollbar-thumb{
+background:#ffc107;
+border-radius:20px;
+}
