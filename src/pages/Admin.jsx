@@ -10,6 +10,8 @@ import {
   FaTrash,
   FaEdit,
   FaSearch,
+  FaBars,
+  FaTimes,
 } from "react-icons/fa";
 import {
   getCategories,
@@ -27,6 +29,8 @@ export default function Admin() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [activePage, setActivePage] = useState("dashboard");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // Add Category
   const [categoryName, setCategoryName] = useState("");
@@ -57,8 +61,8 @@ export default function Admin() {
     try {
       const cats = await getCategories();
       const prods = await getProducts();
-      setCategories(cats);
-      setProducts(prods);
+      setCategories(cats || []);
+      setProducts(prods || []);
     } catch (err) {
       console.log(err);
     }
@@ -152,9 +156,32 @@ export default function Admin() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-100 flex">
+    <div className="min-h-screen bg-gray-100 flex flex-col md:flex-row relative">
+      {/* Mobile Top Header (تظهر فقط في الموبايل) */}
+      <div className="md:hidden bg-gray-900 text-white p-4 flex justify-between items-center sticky top-0 z-30 shadow-lg">
+        <h1 className="text-xl font-bold text-yellow-400">MENU ADMIN</h1>
+        <button
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          className="text-2xl text-yellow-400 focus:outline-none"
+        >
+          {isSidebarOpen ? <FaTimes /> : <FaBars />}
+        </button>
+      </div>
+
+      {/* Overlay للموبايل لما القائمة تفتح */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/60 z-40 md:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
-      <aside className="w-72 bg-gray-900 text-white flex flex-col shadow-2xl">
+      <aside
+        className={`fixed md:static top-0 left-0 h-full w-72 bg-gray-900 text-white flex flex-col shadow-2xl z-50 transform transition-transform duration-300 ease-in-out ${
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+        }`}
+      >
         <div className="text-center py-8 border-b border-gray-700">
           <img
             src="https://cdn-icons-png.flaticon.com/512/5787/5787016.png"
@@ -166,24 +193,66 @@ export default function Admin() {
           </h1>
           <p className="text-gray-400 mt-2">Firebase Dashboard</p>
         </div>
-        <nav className="flex-1 p-5 space-y-3">
-          <button className="w-full bg-yellow-400 text-black rounded-xl p-4 flex items-center gap-3 font-bold">
+        <nav className="flex-1 p-5 space-y-3 overflow-y-auto">
+          <button
+            onClick={() => {
+              setActivePage("dashboard");
+              setIsSidebarOpen(false);
+            }}
+            className={`w-full rounded-xl p-4 flex items-center gap-3 duration-300 ${
+              activePage === "dashboard"
+                ? "bg-yellow-400 text-black font-bold"
+                : "hover:bg-gray-800"
+            }`}
+          >
             <FaHome />
             Dashboard
           </button>
-          <button className="w-full hover:bg-gray-800 rounded-xl p-4 flex items-center gap-3 duration-300">
+          <button
+            onClick={() => {
+              setActivePage("products");
+              setIsSidebarOpen(false);
+            }}
+            className={`w-full rounded-xl p-4 flex items-center gap-3 duration-300 ${
+              activePage === "products"
+                ? "bg-yellow-400 text-black font-bold"
+                : "hover:bg-gray-800"
+            }`}
+          >
             <FaUtensils />
             المنتجات
           </button>
-          <button className="w-full hover:bg-gray-800 rounded-xl p-4 flex items-center gap-3 duration-300">
+          <button
+            onClick={() => {
+              setActivePage("categories");
+              setIsSidebarOpen(false);
+            }}
+            className={`w-full rounded-xl p-4 flex items-center gap-3 duration-300 ${
+              activePage === "categories"
+                ? "bg-yellow-400 text-black font-bold"
+                : "hover:bg-gray-800"
+            }`}
+          >
             <FaTags />
             الأقسام
           </button>
-          <button className="w-full hover:bg-gray-800 rounded-xl p-4 flex items-center gap-3 duration-300">
+          <button
+            onClick={() => {
+              setActivePage("images");
+              setIsSidebarOpen(false);
+            }}
+            className="w-full hover:bg-gray-800 rounded-xl p-4 flex items-center gap-3 duration-300"
+          >
             <FaImage />
             الصور
           </button>
-          <button className="w-full hover:bg-gray-800 rounded-xl p-4 flex items-center gap-3 duration-300">
+          <button
+            onClick={() => {
+              setActivePage("settings");
+              setIsSidebarOpen(false);
+            }}
+            className="w-full hover:bg-gray-800 rounded-xl p-4 flex items-center gap-3 duration-300"
+          >
             <FaCog />
             الإعدادات
           </button>
@@ -197,11 +266,11 @@ export default function Admin() {
       </aside>
 
       {/* Content */}
-      <main className="flex-1 p-8 overflow-auto">
+      <main className="flex-1 p-4 sm:p-8 overflow-y-auto min-w-0">
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-5 mb-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-5 mb-8">
           <div>
-            <h1 className="text-4xl font-bold">Dashboard</h1>
+            <h1 className="text-3xl sm:text-4xl font-bold">Dashboard</h1>
             <p className="text-gray-500 mt-2">إدارة المطعم والمنتجات والأقسام</p>
           </div>
           <div className="relative w-full md:w-96">
@@ -217,7 +286,7 @@ export default function Admin() {
         </div>
 
         {/* Dashboard Cards */}
-        <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-6 mb-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
           <div className="bg-white rounded-2xl shadow-lg p-6">
             <p className="text-gray-500">عدد الأقسام</p>
             <h2 className="text-5xl font-bold mt-3 text-yellow-500">
@@ -230,7 +299,7 @@ export default function Admin() {
               {products.length}
             </h2>
           </div>
-          <div className="bg-white rounded-2xl shadow-lg p-6">
+          <div className="bg-white rounded-2xl shadow-lg p-6 md:col-span-2 lg:col-span-1">
             <p className="text-gray-500">حالة المطعم</p>
             <h2 className="text-3xl font-bold mt-4 text-green-600">
               مفتوح الآن
@@ -239,7 +308,7 @@ export default function Admin() {
         </div>
 
         {/* Quick Buttons */}
-        <div className="grid md:grid-cols-2 gap-6 mb-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
           <button
             onClick={() => setShowCategoryModal(true)}
             className="bg-blue-600 hover:bg-blue-700 duration-300 text-white rounded-2xl p-6 flex items-center justify-center gap-3 text-xl shadow-lg"
@@ -265,7 +334,7 @@ export default function Admin() {
             </span>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full min-w-[600px]">
               <thead className="bg-gray-100">
                 <tr>
                   <th className="p-4 text-left">الصورة</th>
@@ -332,9 +401,9 @@ export default function Admin() {
 
         {/* =========================== Add Category Modal =========================== */}
         {showCategoryModal && (
-          <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
-            <div className="bg-white rounded-2xl w-[450px] p-8 shadow-2xl">
-              <h2 className="text-3xl font-bold mb-6">إضافة قسم جديد</h2>
+          <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 p-4">
+            <div className="bg-white rounded-2xl w-full max-w-[450px] p-6 sm:p-8 shadow-2xl">
+              <h2 className="text-2xl sm:text-3xl font-bold mb-6">إضافة قسم جديد</h2>
               <input
                 type="text"
                 placeholder="اسم القسم"
@@ -362,9 +431,9 @@ export default function Admin() {
 
         {/* =========================== Add Product Modal =========================== */}
         {showProductModal && (
-          <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
-            <div className="bg-white rounded-2xl w-[650px] p-8 shadow-2xl">
-              <h2 className="text-3xl font-bold mb-6">إضافة منتج جديد</h2>
+          <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 p-4">
+            <div className="bg-white rounded-2xl w-full max-w-[650px] p-6 sm:p-8 shadow-2xl max-h-[90vh] overflow-y-auto">
+              <h2 className="text-2xl sm:text-3xl font-bold mb-6">إضافة منتج جديد</h2>
               <div className="grid gap-4">
                 <input
                   value={productName}
@@ -426,7 +495,7 @@ export default function Admin() {
         {/* =========================== Categories List =========================== */}
         <div className="bg-white rounded-2xl shadow-xl mt-10 p-6">
           <h2 className="text-2xl font-bold mb-6">الأقسام</h2>
-          <div className="grid md:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {categories.map((cat) => (
               <div
                 key={cat.id}
@@ -456,8 +525,8 @@ export default function Admin() {
 
         {/* =========================== Edit Category Modal =========================== */}
         {showEditCategoryModal && editingCategory && (
-          <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
-            <div className="bg-white rounded-2xl p-8 w-[450px]">
+          <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 p-4">
+            <div className="bg-white rounded-2xl p-6 sm:p-8 w-full max-w-[450px]">
               <h2 className="text-2xl font-bold mb-5">تعديل القسم</h2>
               <input
                 value={editingCategory.title}
@@ -492,9 +561,9 @@ export default function Admin() {
 
         {/* =========================== Edit Product Modal =========================== */}
         {showEditProductModal && editingProduct && (
-          <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
-            <div className="bg-white rounded-2xl p-8 w-[650px]">
-              <h2 className="text-3xl font-bold mb-6">تعديل المنتج</h2>
+          <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 p-4">
+            <div className="bg-white rounded-2xl p-6 sm:p-8 w-full max-w-[650px] max-h-[90vh] overflow-y-auto">
+              <h2 className="text-2xl sm:text-3xl font-bold mb-6">تعديل المنتج</h2>
               <div className="grid gap-4">
                 <input
                   value={editingProduct.name}
