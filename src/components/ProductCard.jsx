@@ -1,184 +1,206 @@
 import { useState } from "react";
 import {
-  FaPlus,
   FaHeart,
-  FaFire,
+  FaPlus,
   FaStar,
 } from "react-icons/fa";
 
+import ProductBottomSheet from "./ProductBottomSheet";
+
 export default function ProductCard({ item }) {
-  const [fav, setFav] = useState(false);
+  const [favorite, setFavorite] = useState(false);
+  const [open, setOpen] = useState(false);
 
   return (
-    <div
-      className="
-      group
-      bg-white
-      rounded-3xl
-      overflow-hidden
-      shadow-md
-      hover:shadow-2xl
-      transition-all
-      duration-500
-      hover:-translate-y-2
-      "
-    >
-      {/* الصورة */}
+    <>
+      <div
+        onClick={() => setOpen(true)}
+        className="
+        bg-white
+        rounded-2xl
+        shadow
+        hover:shadow-xl
+        border
+        border-gray-100
+        hover:border-[#0284C7]
+        transition-all
+        duration-300
+        cursor-pointer
+        overflow-hidden
+        "
+      >
+        <div className="flex items-center justify-between p-3 sm:p-5">
 
-      <div className="relative overflow-hidden">
+          {/* البيانات */}
 
-        <img
-          src={
-            item.image ||
-            "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=900"
-          }
-          alt={item.name}
-          className="
-          w-full
-          h-72
-          object-cover
-          duration-700
-          group-hover:scale-110
-          "
-        />
+          <div className="flex-1 min-w-0">
 
-        {/* Overlay */}
+            <div className="flex items-center gap-2 flex-wrap">
 
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+              <h2 className="text-lg sm:text-2xl font-bold text-gray-800 truncate">
+                {item.name}
+              </h2>
 
-        {/* السعر */}
+              <span
+                className="
+                bg-[#0284C7]/10
+                text-[#0284C7]
+                text-[10px]
+                sm:text-xs
+                px-2
+                py-1
+                rounded-full
+                "
+              >
+                جديد
+              </span>
 
-        <div className="absolute top-4 left-4">
+            </div>
 
-          <span className="bg-yellow-400 text-black px-4 py-2 rounded-full font-bold shadow-lg">
-
-            {item.price} EGP
-
-          </span>
-
-        </div>
-
-        {/* الأكثر مبيعًا */}
-
-        <div className="absolute top-4 right-4">
-
-          <span className="flex items-center gap-2 bg-red-600 text-white px-3 py-2 rounded-full text-sm shadow">
-
-            <FaFire />
-
-            الأكثر مبيعًا
-
-          </span>
-
-        </div>
-
-        {/* المفضلة */}
-
-        <button
-          onClick={() => setFav(!fav)}
-          className="
-          absolute
-          bottom-4
-          right-4
-          w-12
-          h-12
-          rounded-full
-          bg-white
-          shadow-lg
-          flex
-          justify-center
-          items-center
-          duration-300
-          hover:scale-110
-          "
-        >
-          <FaHeart
-            className={
-              fav
-                ? "text-red-500"
-                : "text-gray-400"
-            }
-            size={22}
-          />
-        </button>
-
-      </div>
-
-      {/* المحتوى */}
-
-      <div className="p-6">
-
-        <div className="flex justify-between items-start">
-
-          <div>
-
-            <h2 className="text-2xl font-bold">
-
-              {item.name}
-
-            </h2>
-
-            <p className="text-gray-500 mt-3 leading-7">
-
+            <p
+              className="
+              text-gray-500
+              text-sm
+              sm:text-base
+              mt-2
+              line-clamp-1
+              "
+            >
               {item.description}
-
             </p>
+
+            <div className="flex items-center gap-3 mt-3">
+
+              <span
+                className="
+                text-xl
+                sm:text-3xl
+                font-extrabold
+                text-[#0284C7]
+                "
+              >
+                {item.price} EGP
+              </span>
+
+              <div
+                className="
+                flex
+                items-center
+                gap-1
+                bg-yellow-100
+                px-2
+                py-1
+                rounded-full
+                "
+              >
+                <FaStar className="text-yellow-400 text-xs sm:text-sm" />
+
+                <span className="font-bold text-xs sm:text-sm">
+                  {item.rating || "4.8"}
+                </span>
+
+              </div>
+
+            </div>
 
           </div>
 
-          {/* التقييم */}
+          {/* الصورة */}
 
-          <div className="flex items-center gap-1 bg-yellow-100 px-3 py-2 rounded-full">
+          <div className="relative ml-3 sm:ml-5 flex-shrink-0">
 
-            <FaStar className="text-yellow-500" />
+            <img
+              src={
+                item.image ||
+                "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=900"
+              }
+              alt={item.name}
+              className="
+              w-24
+              h-24
+              sm:w-36
+              sm:h-36
+              md:w-44
+              md:h-44
+              rounded-2xl
+              object-cover
+              shadow
+              "
+            />
 
-            <span className="font-bold">
+            {/* القلب */}
 
-              {item.rating || "4.8"}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setFavorite(!favorite);
+              }}
+              className="
+              absolute
+              top-2
+              left-2
+              w-8
+              h-8
+              sm:w-10
+              sm:h-10
+              rounded-full
+              bg-white
+              shadow
+              flex
+              items-center
+              justify-center
+              "
+            >
+              <FaHeart
+                size={14}
+                className={
+                  favorite
+                    ? "text-red-500"
+                    : "text-gray-300"
+                }
+              />
+            </button>
 
-            </span>
+            {/* زر + */}
+
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setOpen(true);
+              }}
+              className="
+              absolute
+              bottom-2
+              right-2
+              w-9
+              h-9
+              sm:w-12
+              sm:h-12
+              rounded-full
+              bg-[#0284C7]
+              text-white
+              shadow-lg
+              hover:bg-[#0369A1]
+              transition-all
+              duration-300
+              flex
+              items-center
+              justify-center
+              "
+            >
+              <FaPlus size={15} />
+            </button>
 
           </div>
 
         </div>
-
-        {/* Footer */}
-
-        <div className="flex justify-between items-center mt-8">
-
-          <div>
-
-            <p className="text-green-600 font-semibold">
-
-              متوفر الآن
-
-            </p>
-
-          </div>
-
-          <button
-            className="
-            w-14
-            h-14
-            rounded-full
-            bg-blue-600
-            text-white
-            flex
-            justify-center
-            items-center
-            hover:bg-blue-700
-            duration-300
-            hover:rotate-90
-            shadow-lg
-            "
-          >
-            <FaPlus size={18} />
-          </button>
-
-        </div>
-
       </div>
 
-    </div>
+      <ProductBottomSheet
+        item={item}
+        open={open}
+        onClose={() => setOpen(false)}
+      />
+    </>
   );
 }

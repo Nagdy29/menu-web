@@ -1,9 +1,12 @@
+import head from "../assets/header-1785894524719.webp"
+import logo from "../assets/logo-1785807827247.webp"
+
 export default function Header() {
   return (
     <header className="relative h-[420px]">
 
       <img
-        src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1600"
+        src={head}
         alt="Restaurant"
         className="w-full h-full object-cover"
       />
@@ -13,7 +16,7 @@ export default function Header() {
       <div className="absolute inset-0 flex flex-col justify-center items-center text-white">
 
         <img
-          src="https://cdn-icons-png.flaticon.com/512/5787/5787016.png"
+        src={logo}
           alt="Logo"
           className="w-36 h-36 rounded-full border-4 border-white shadow-xl bg-white object-cover"
         />

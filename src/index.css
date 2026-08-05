@@ -21,3 +21,33 @@ width:7px;
 background:#ffc107;
 border-radius:20px;
 }
+
+@keyframes sheet {
+
+0%{
+transform:translateY(100%);
+}
+
+100%{
+transform:translateY(0);
+}
+
+}
+
+.animate-sheet{
+
+animation:sheet .35s ease;
+
+}
+
+
+/* إخفاء Scrollbar */
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
